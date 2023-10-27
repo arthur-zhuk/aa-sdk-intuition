@@ -9,15 +9,18 @@ import {
   type SpyInstance,
 } from "vitest";
 import type { UserOperationReceipt } from "../../types.js";
+import { getDefaultEntryPointContract } from "../../utils/index.js";
 import { SmartAccountProvider } from "../base.js";
+
+const chain = polygonMumbai;
+const entryPointAddress = getDefaultEntryPointContract(chain);
 
 describe("Base Tests", () => {
   let retryMsDelays: number[] = [];
 
   const providerMock = new SmartAccountProvider({
     rpcProvider: "ALCHEMY_RPC_URL",
-    entryPointAddress: "0xENTRYPOINT_ADDRESS",
-    chain: polygonMumbai,
+    chain,
   });
 
   beforeEach(() => {
@@ -69,8 +72,8 @@ describe("Base Tests", () => {
   it("should emit connected event on connected", async () => {
     const spy = vi.spyOn(providerMock, "emit");
     const account = {
-      chain: polygonMumbai,
-      entryPointAddress: "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
+      chain,
+      entryPointAddress,
       rpcClient: providerMock.rpcClient,
       getAddress: async () => "0xMOCK_ADDRESS",
       getFactoryAddress: () => "0xMOCK_FACOTRY_ADDRESS",
@@ -164,8 +167,7 @@ describe("Base Tests", () => {
 
     const provider = new TestProvider({
       rpcProvider: "ALCHEMY_RPC_URL",
-      entryPointAddress: "0xENTRYPOINT_ADDRESS",
-      chain: polygonMumbai,
+      chain,
     });
 
     const newProvider = provider.extend(() => ({

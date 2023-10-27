@@ -48,6 +48,8 @@ export {
   deepHexlify,
   defineReadOnly,
   getChain,
+  getDefaultEntryPointContract,
+  getDefaultSimpleAccountFactory,
   getUserOperationHash,
   resolveProperties,
 } from "./utils/index.js";
