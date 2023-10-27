@@ -49,6 +49,7 @@ export {
   defineReadOnly,
   getChain,
   getUserOperationHash,
+  isValidRequest,
   resolveProperties,
 } from "./utils/index.js";
 

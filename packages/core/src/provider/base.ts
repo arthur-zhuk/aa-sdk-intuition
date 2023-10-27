@@ -20,15 +20,14 @@ import type {
   PublicErc4337Client,
   SupportedTransports,
 } from "../client/types.js";
-import {
-  isValidRequest,
-  type BatchUserOperationCallData,
-  type UserOperationCallData,
-  type UserOperationOverrides,
-  type UserOperationReceipt,
-  type UserOperationRequest,
-  type UserOperationResponse,
-  type UserOperationStruct,
+import type {
+  BatchUserOperationCallData,
+  UserOperationCallData,
+  UserOperationOverrides,
+  UserOperationReceipt,
+  UserOperationRequest,
+  UserOperationResponse,
+  UserOperationStruct,
 } from "../types.js";
 import {
   asyncPipe,
@@ -37,6 +36,7 @@ import {
   deepHexlify,
   defineReadOnly,
   getUserOperationHash,
+  isValidRequest,
   resolveProperties,
   type Deferrable,
 } from "../utils/index.js";

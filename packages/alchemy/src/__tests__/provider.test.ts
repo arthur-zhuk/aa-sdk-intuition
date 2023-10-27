@@ -1,4 +1,3 @@
-import * as AACoreModule from "@alchemy/aa-core";
 import {
   SimpleSmartContractAccount,
   type BatchUserOperationCallData,
@@ -7,6 +6,7 @@ import {
 import { toHex, type Chain } from "viem";
 import { mnemonicToAccount } from "viem/accounts";
 import { polygonMumbai } from "viem/chains";
+import * as AlchemyClient from "../client/factory.js";
 import { AlchemyProvider } from "../provider.js";
 
 describe("Alchemy Provider Tests", () => {
@@ -20,11 +20,12 @@ describe("Alchemy Provider Tests", () => {
       }),
     signTypedData: async () => "0xHash",
     getAddress: async () => ownerAccount.address,
+    signerType: "local",
   };
   const chain = polygonMumbai;
 
   it("should have a JWT propety", async () => {
-    const spy = vi.spyOn(AACoreModule, "createPublicErc4337Client");
+    const spy = vi.spyOn(AlchemyClient, "createAlchemyEnhanced4337Client");
     givenConnectedProvider({ owner, chain });
     expect(spy.mock.calls[0][0].fetchOptions).toMatchInlineSnapshot(`
       {
