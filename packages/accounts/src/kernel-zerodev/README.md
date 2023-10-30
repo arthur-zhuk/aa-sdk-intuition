@@ -37,8 +37,6 @@ const validator: KernelBaseValidator = new KernelBaseValidator({
   owner,
 });
 
-const entryPointAddress = getDefaultEntryPointContract(chain);
-
 // 2. initialize the provider and connect it to the account
 const provider = new KernelAccountProvider(
   // the demo key below is public and rate-limited, it's better to create a new one
@@ -50,7 +48,6 @@ const provider = new KernelAccountProvider(
     new KernelSmartContractAccount({
       owner,
       index: 0n,
-      entryPointAddress,
       chain,
       factoryAddress: KERNEL_ACCOUNT_FACTORY_ADDRESS,
       rpcClient,

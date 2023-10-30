@@ -7,6 +7,7 @@ import {
 import { polygonMumbai, type Chain } from "viem/chains";
 import { describe, it } from "vitest";
 import { LightSmartContractAccount } from "../account.js";
+import { getDefaultLightAccountFactory } from "../utils.js";
 
 describe("Light Account Tests", () => {
   const dummyMnemonic =
@@ -84,10 +85,9 @@ const givenConnectedProvider = ({
     chain,
   }).connect((provider) => {
     const account = new LightSmartContractAccount({
-      entryPointAddress: "0xENTRYPOINT_ADDRESS",
       chain,
       owner,
-      factoryAddress: "0xLIGHT_ACCOUNT_FACTORY_ADDRESS",
+      factoryAddress: getDefaultLightAccountFactory(chain),
       rpcClient: provider,
     });
 

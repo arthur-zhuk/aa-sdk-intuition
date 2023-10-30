@@ -5,10 +5,7 @@ import {
   getDefaultLightAccountFactory,
 } from "@alchemy/aa-accounts";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
-import {
-  SmartAccountSigner,
-  getDefaultEntryPointContract,
-} from "@alchemy/aa-core";
+import { SmartAccountSigner } from "@alchemy/aa-core";
 import { useCallback, useState } from "react";
 import { Address } from "viem";
 
@@ -28,7 +25,6 @@ export const useAlchemyProvider = () => {
             rpcClient: provider,
             owner: signer,
             chain,
-            entryPointAddress: getDefaultEntryPointContract(chain),
             factoryAddress: getDefaultLightAccountFactory(chain),
             accountAddress: account,
           });

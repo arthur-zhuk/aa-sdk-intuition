@@ -49,7 +49,10 @@ Let's see it in action with `aa-alchemy` and `LightSmartContractAccount` from `a
 
 ```ts [example.ts]
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
-import { LightSmartContractAccount } from "@alchemy/aa-accounts";
+import {
+  LightSmartContractAccount,
+  getDefaultLightAccountFactory,
+} from "@alchemy/aa-accounts";
 import { sepolia } from "viem/chains";
 import { fireblocksSigner } from "./fireblocks";
 
@@ -60,10 +63,9 @@ const provider = new AlchemyProvider({
 }).connect(
   (rpcClient) =>
     new LightSmartContractAccount({
-      entryPointAddress: "0x...",
       chain: rpcClient.chain,
       owner: fireblocksSigner,
-      factoryAddress: "0x...",
+      factoryAddress: getDefaultLightAccountFactory(chain),
       rpcClient,
     })
 );

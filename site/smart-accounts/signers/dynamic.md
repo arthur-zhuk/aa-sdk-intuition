@@ -85,18 +85,15 @@ import { sepolia } from "viem/chains";
 import { dynamicSigner } from "./dynamic";
 
 const chain = sepolia;
-const entryPointAddress = getDefaultEntryPointContract(chain);
-const factoryAddress = getDefaultLightAccountFactory(chain);
 const provider = new AlchemyProvider({
   apiKey: "ALCHEMY_API_KEY",
   chain,
 }).connect(
   (rpcClient) =>
     new LightSmartContractAccount({
-      entryPointAddress,
-      chain: rpcClient.chain,
+      chain,
       owner: dynamicSigner,
-      factoryAddress,
+      factoryAddress: getDefaultLightAccountFactory(chain),
       rpcClient,
     })
 );

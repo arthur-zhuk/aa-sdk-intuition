@@ -4,14 +4,15 @@ import { SmartAccountProvider } from "../../provider/base.js";
 import { LocalAccountSigner } from "../../signer/local-account.js";
 import { type SmartAccountSigner } from "../../signer/types.js";
 import type { BatchUserOperationCallData } from "../../types.js";
+import { getDefaultSimpleAccountFactory } from "../../utils/defaults.js";
 import { SimpleSmartContractAccount } from "../simple.js";
 
+const chain = polygonMumbai;
 describe("Account Simple Tests", () => {
   const dummyMnemonic =
     "test test test test test test test test test test test test";
   const owner: SmartAccountSigner =
     LocalAccountSigner.mnemonicToAccountSigner(dummyMnemonic);
-  const chain = polygonMumbai;
 
   it("should correctly sign the message", async () => {
     const signer = givenConnectedProvider({ owner, chain });
@@ -55,10 +56,9 @@ const givenConnectedProvider = ({
     chain,
   }).connect((provider) => {
     const account = new SimpleSmartContractAccount({
-      entryPointAddress: "0xENTRYPOINT_ADDRESS",
       chain,
       owner,
-      factoryAddress: "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+      factoryAddress: getDefaultSimpleAccountFactory(chain),
       rpcClient: provider,
     });
 

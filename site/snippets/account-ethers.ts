@@ -2,7 +2,6 @@
 
 import {
   getChain,
-  getDefaultEntryPointContract,
   getDefaultSimpleAccountFactory,
   SimpleSmartContractAccount,
 } from "@alchemy/aa-core";
@@ -28,9 +27,6 @@ const signer = EthersProviderAdapter.fromEthersProvider(
 ).connectToAccount(
   (rpcClient) =>
     new SimpleSmartContractAccount({
-      entryPointAddress: getDefaultEntryPointContract(
-        getChain(alchemyProvider.network.chainId)
-      ),
       chain: getChain(alchemyProvider.network.chainId),
       owner: convertWalletToAccountSigner(owner),
       factoryAddress: getDefaultSimpleAccountFactory(

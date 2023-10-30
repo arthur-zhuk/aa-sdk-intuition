@@ -81,10 +81,9 @@ const givenConnectedProvider = ({
     chain,
   }).connect((provider) => {
     const account = new SimpleSmartContractAccount({
-      entryPointAddress: "0xENTRYPOINT_ADDRESS",
       chain,
       owner,
-      factoryAddress: "0xSIMPLE_ACCOUNT_FACTORY_ADDRESS",
+      factoryAddress: AACoreModule.getDefaultSimpleAccountFactory(chain),
       rpcClient: provider,
     });
 

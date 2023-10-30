@@ -6,15 +6,12 @@ import {
   LocalAccountSigner,
   SmartAccountProvider,
   SmartAccountSigner,
-  getDefaultEntryPointContract,
 } from "@alchemy/aa-core";
 import { polygonMumbai } from "viem/chains";
 
 const chain = polygonMumbai;
 const owner: SmartAccountSigner =
   LocalAccountSigner.mnemonicToAccountSigner(YOUR_OWNER_MNEMONIC);
-const entryPointAddress = getDefaultEntryPointContract(chain);
-const factoryAddress = getDefaultLightAccountFactory(chain);
 
 export const provider = new SmartAccountProvider({
   rpcProvider: "https://polygon-mumbai.g.alchemy.com/v2/demo",
@@ -22,9 +19,8 @@ export const provider = new SmartAccountProvider({
 }).connect(
   (rpcClient) =>
     new LightSmartContractAccount({
-      entryPointAddress,
       chain,
-      factoryAddress,
+      factoryAddress: getDefaultLightAccountFactory(chain),
       rpcClient,
       owner,
     })

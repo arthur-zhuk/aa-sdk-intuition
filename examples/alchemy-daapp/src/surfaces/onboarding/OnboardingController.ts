@@ -2,7 +2,6 @@ import { LightSmartContractAccount, getDefaultLightAccountFactory } from "@alche
 import { AlchemyProvider, withAlchemyGasManager } from "@alchemy/aa-alchemy";
 import {
   createPublicErc4337Client,
-  getDefaultEntryPointContract,
   type SmartAccountSigner
 } from "@alchemy/aa-core";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -88,7 +87,6 @@ const onboardingStepHandlers: Record<
       return new LightSmartContractAccount({
         chain,
         owner: context.owner,
-        entryPointAddress: getDefaultEntryPointContract(chain),
         factoryAddress: getDefaultLightAccountFactory(chain),
         rpcClient: provider,
       });
