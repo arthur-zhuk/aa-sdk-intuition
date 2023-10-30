@@ -21,7 +21,6 @@ import type {
   SupportedTransports,
 } from "../client/types.js";
 import {
-  isValidRequest,
   type BatchUserOperationCallData,
   type UserOperationCallData,
   type UserOperationOverrides,
@@ -36,10 +35,13 @@ import {
   bigIntPercent,
   deepHexlify,
   defineReadOnly,
+  getDefaultEntryPointAddress,
   getUserOperationHash,
+  isValidRequest,
   resolveProperties,
   type Deferrable,
 } from "../utils/index.js";
+import { SmartAccountProviderConfigSchema } from "./schema.js";
 import type {
   AccountMiddlewareFn,
   AccountMiddlewareOverrideFn,
@@ -49,47 +51,17 @@ import type {
   PaymasterAndDataMiddleware,
   ProviderEvents,
   SendUserOperationResult,
+  SmartAccountProviderConfig,
 } from "./types.js";
 
 export const noOpMiddleware: AccountMiddlewareFn = async (
   struct: Deferrable<UserOperationStruct>
 ) => struct;
 
-export interface SmartAccountProviderOpts {
-  /**
-   * The maximum number of times to try fetching a transaction receipt before giving up (default: 5)
-   */
-  txMaxRetries?: number;
-
-  /**
-   * The interval in milliseconds to wait between retries while waiting for tx receipts (default: 2_000n)
-   */
-  txRetryIntervalMs?: number;
-
-  /**
-   * The mulitplier on interval length to wait between retries while waiting for tx receipts (default: 1.5)
-   */
-  txRetryMulitplier?: number;
-
-  /**
-   * used when computing the fees for a user operation (default: 100_000_000n)
-   */
-  minPriorityFeePerBid?: bigint;
-}
-
 const minPriorityFeePerBidDefaults = new Map<number, bigint>([
   [arbitrum.id, 10_000_000n],
   [arbitrumGoerli.id, 10_000_000n],
 ]);
-
-export type SmartAccountProviderConfig<
-  TTransport extends SupportedTransports = Transport
-> = {
-  rpcProvider: string | PublicErc4337Client<TTransport>;
-  chain: Chain;
-  entryPointAddress: Address;
-  opts?: SmartAccountProviderOpts;
-};
 
 export class SmartAccountProvider<
     TTransport extends SupportedTransports = Transport
@@ -100,29 +72,32 @@ export class SmartAccountProvider<
   private txMaxRetries: number;
   private txRetryIntervalMs: number;
   private txRetryMulitplier: number;
+
+  private minPriorityFeePerBid: bigint;
+
   readonly account?: ISmartContractAccount;
-  protected entryPointAddress: Address;
+  readonly entryPointAddress: Address;
+
   protected chain: Chain;
 
-  minPriorityFeePerBid: bigint;
   rpcClient:
     | PublicErc4337Client<TTransport>
     | PublicErc4337Client<HttpTransport>;
 
-  constructor({
-    rpcProvider,
-    entryPointAddress,
-    chain,
-    opts,
-  }: SmartAccountProviderConfig<TTransport>) {
+  constructor(config: SmartAccountProviderConfig<TTransport>) {
+    SmartAccountProviderConfigSchema<TTransport>().parse(config);
+
+    const { rpcProvider, entryPointAddress, chain, opts } = config;
+
     super();
 
-    this.entryPointAddress = entryPointAddress;
     this.chain = chain;
 
     this.txMaxRetries = opts?.txMaxRetries ?? 5;
     this.txRetryIntervalMs = opts?.txRetryIntervalMs ?? 2000;
     this.txRetryMulitplier = opts?.txRetryMulitplier ?? 1.5;
+    this.entryPointAddress =
+      entryPointAddress ?? getDefaultEntryPointAddress(chain);
 
     this.minPriorityFeePerBid =
       opts?.minPriorityFeePerBid ??
@@ -441,7 +416,7 @@ export class SmartAccountProvider<
     request.signature = (await this.account.signMessage(
       getUserOperationHash(
         request,
-        this.entryPointAddress as `0x${string}`,
+        this.entryPointAddress,
         BigInt(this.chain.id)
       )
     )) as `0x${string}`;
@@ -579,7 +554,7 @@ export class SmartAccountProvider<
           ...fetchOptions,
           headers: {
             ...fetchOptions?.headers,
-            "Alchemy-Aa-Sdk-Signer": signer?.signerType,
+            "Alchemy-Aa-Sdk-Signer": signer?.signerType || "unknown",
             "Alchemy-Aa-Sdk-Factory-Address": factoryAddress,
           },
         },
